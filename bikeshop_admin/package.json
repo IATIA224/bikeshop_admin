@@ -1,0 +1,27 @@
+{
+  "name": "bikeshop_admin",
+  "version": "1.0.0",
+  "description": "Admin interface for managing bike shop operations.",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "test": "jest"
+  },
+  "dependencies": {
+    "firebase": "^9.0.0",
+    "xlsx": "^0.17.0"
+  },
+  "devDependencies": {
+    "vite": "^2.0.0",
+    "jest": "^27.0.0"
+  },
+  "keywords": [
+    "admin",
+    "dashboard",
+    "firebase",
+    "xlsx"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

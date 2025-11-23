@@ -1,0 +1,33 @@
+{
+  "name": "bikeshop-admin-ui",
+  "version": "1.0.0",
+  "description": "Admin side UI for Bikeshop with Firebase authentication and dashboard for uploading XLSX files to Firestore.",
+  "main": "src/js/app.js",
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "build": "webpack --mode production",
+    "test": "jest"
+  },
+  "keywords": [
+    "bikeshop",
+    "admin",
+    "firebase",
+    "dashboard",
+    "xlsx"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^9.0.0",
+    "xlsx": "^0.17.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.0.0",
+    "webpack-cli": "^4.0.0",
+    "webpack-dev-server": "^3.0.0",
+    "jest": "^27.0.0",
+    "babel-loader": "^8.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0"
+  }
+}
