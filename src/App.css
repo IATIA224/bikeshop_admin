@@ -51,19 +51,20 @@
 html, body, #root { height: 100%; margin: 0; font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial }
 
 body {
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(79, 70, 229, 0.12), transparent),
-              radial-gradient(900px 420px at 90% 90%, rgba(6, 182, 212, 0.06), transparent),
-              linear-gradient(180deg, var(--bg-1), var(--bg-2));
+  background: #0f172a !important; /* solid dark background */
   color: #e6eef6;
+  min-height: 100vh;
+  margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* common card */
 .card {
+  margin: 32px auto;
   width: 100%;
-  max-width: 720px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+  max-width: 950px;
+  background: #16213a !important; /* solid card background */
   border-radius: 14px;
   padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.04);
@@ -152,9 +153,10 @@ progress::-webkit-progress-value { background: linear-gradient(90deg, var(--acce
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(12, 15, 20, 0.98); /* nearly solid */
+  background: rgba(12,15,20,0.98);
   z-index: 70;
   padding: 24px;
+  overflow: hidden; /* Hide scrollbars on modal */
 }
 .modal-card {
   background: linear-gradient(180deg, #0b1220, #0f1724); /* solid-ish dark background */
@@ -169,4 +171,39 @@ progress::-webkit-progress-value { background: linear-gradient(90deg, var(--acce
 @keyframes modalPop {
   from { transform: translateY(8px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
+}
+
+/* Add to your App.css or styles.css */
+select, select option {
+  background: #1e293b;         /* dark background */
+  color: #fff;                 /* white text */
+  border: 1px solid #334155;   /* subtle border */
+}
+
+select:focus {
+  outline: 2px solid #38bdf8;  /* blue focus ring */
+}
+
+.table-wrap {
+  overflow-x: auto;
+  width: 100%;
+  scrollbar-width: none; /* Firefox */
+}
+
+.table-wrap::-webkit-scrollbar {
+  display: none;         /* Chrome, Safari */
+}
+
+/* Hide scrollbars for all elements */
+body, html, #root, .app-shell, .table-wrap {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE 10+ */
+}
+
+body::-webkit-scrollbar,
+html::-webkit-scrollbar,
+#root::-webkit-scrollbar,
+.app-shell::-webkit-scrollbar,
+.table-wrap::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
 }

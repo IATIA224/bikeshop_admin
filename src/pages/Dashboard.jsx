@@ -335,18 +335,18 @@ export default function Dashboard() {
           <table className="data-table">
             <thead>
               <tr>
-                <th style={{ width: 64 }}></th>
-                <th style={{ textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>Name</th>
-                <th style={{ width: 120, textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>Price</th>
-                <th style={{ width: 160, textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>Uploaded/Updated</th>
-                <th style={{ width: 110, textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>ID</th>
-                <th style={{ width: 210 }}></th>
+                <th style={{ width: 48, textAlign: "center" }}>#</th>
+                <th style={{ textAlign: "left" }}>Name</th>
+                <th style={{ width: 100, textAlign: "right" }}>Price</th>
+                <th style={{ width: 160, textAlign: "left" }}>Uploaded/Updated</th>
+                <th style={{ width: 110, textAlign: "center" }}>ID</th>
+                <th style={{ width: 210, textAlign: "center" }}></th>
               </tr>
             </thead>
             <tbody>
               {items.length === 0 ? (
                 <tr className="empty-row"><td colSpan="7">No documents found in {collectionName}.</td></tr>
-              ) : items.map(item => {
+              ) : items.map((item, idx) => {
                 const price = primaryValue(item);
                 const title = niceTitle(item);
                 const uploadedAt = formatDate(item._uploadedAt ?? item.createdAt ?? item.uploadedAt);
@@ -354,36 +354,27 @@ export default function Dashboard() {
                 const images = Array.isArray(item.IMAGES) ? item.IMAGES : (item.IMAGES ? [item.IMAGES] : []);
                 return (
                   <tr key={item.id} className="data-row">
-                    <td>
+                    <td style={{ textAlign: "center", fontWeight: 700 }}>
                       {images.length > 0 && typeof images[0] === "string" ? (
                         <img src={images[0]} alt="" className="thumbnail" />
                       ) : (
                         <div className="thumb-fallback">{String(title ?? '').slice(0,2).toUpperCase()}</div>
                       )}
                     </td>
-
-                    <td>
-                      <div className="row-title">{title}</div>
+                    <td style={{ textAlign: "left", fontWeight: 600, fontSize: 15 }}>
+                      {title}
                     </td>
-
-                    <td>
-                      {/* Description column intentionally left blank */}
-                    </td>
-
-                    <td>
+                    <td style={{ textAlign: "right" }}>
                       {price != null ? <div className="price-pill">{price}</div> : <div className="muted">—</div>}
                     </td>
-
-                    <td>
-                      <div style={{ fontSize: 13, color: "var(--muted)" }}>{uploadedAt || updatedAt}</div>
+                    <td style={{ textAlign: "left", fontSize: 13, color: "var(--muted)" }}>
+                      {uploadedAt || updatedAt}
                     </td>
-
-                    <td>
-                      <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 12, color: "var(--muted)" }}>{String(item.id).slice(0,12)}</div>
+                    <td style={{ textAlign: "center", fontFamily: "ui-monospace, monospace", fontSize: 12, color: "var(--muted)" }}>
+                      {String(item.id).slice(0,12)}
                     </td>
-
-                    <td className="actions-cell">
-                      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                    <td className="actions-cell" style={{ textAlign: "center" }}>
+                      <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
                         <button className="btn small" onClick={() => { setEditing(item); setCreating(false); setExpandedId(null); }}>Edit</button>
                         <button className="btn small" onClick={() => removeItem(item.id)} style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.04)" }}>Delete</button>
                         <button className="btn small" onClick={() => setExpandedId(expandedId === item.id ? null : item.id)} style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.04)" }}>
@@ -422,7 +413,7 @@ export default function Dashboard() {
             onSubmit={(form) => addItem(form)}
             onCancel={() => setCreating(false)}
           />
-        </div>
+        </div>  
       )}
 
       {editing && (
