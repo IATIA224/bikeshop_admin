@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import bikeshopLogo from "../assets/bikeshop_logo.png";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -34,9 +35,11 @@ export default function Login() {
       <div className="auth-wrap">
         <div className="auth-card card">
           <div className="brand">
-            <div className="logo">BS</div>
+            <div className="logo">
+              <img src={bikeshopLogo} alt="KJC Bikeshop Logo" style={{height: 60}} />
+            </div>
             <div>
-              <div style={{fontSize:14, color:"#a8b4c6"}}>BikeShop</div>
+              <div style={{fontSize:14, color:"#a8b4c6"}}>KJC Bikeshop</div>
               <div style={{fontSize:12, color:"var(--muted)"}}>Admin dashboard</div>
             </div>
           </div>
