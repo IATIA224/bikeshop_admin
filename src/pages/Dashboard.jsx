@@ -184,8 +184,8 @@ export default function Dashboard() {
                 <div style={{ width: 130, color: "var(--muted)" }}>{k}</div>
                 <textarea
                   style={{ width: "100%", padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", color: "#fff", minHeight: 48 }}
-                  value={form[k] ?? ""}
-                  onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+                  value={Array.isArray(form[k]) ? form[k].join("\n") : (form[k] ?? "")}
+                  onChange={(e) => setForm({ ...form, [k]: e.target.value.split("\n") })}
                 />
               </div>
             );
@@ -264,6 +264,7 @@ export default function Dashboard() {
 
   function niceSubtitle(item) {
     const v = item?.description ?? item?.summary ?? item?.SERVICES ?? item?.PRICE ?? "";
+    if (Array.isArray(v)) return v.join("\n");
     if (v == null) return "";
     return typeof v === "string" ? v : (typeof v === "object" ? JSON.stringify(v) : String(v));
   }
@@ -402,7 +403,10 @@ export default function Dashboard() {
             <div style={{ fontWeight: 700, marginBottom: 8 }}>Details</div>
             <div style={{ padding: 12, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)" }}>
               <pre style={{ color: "var(--muted)", whiteSpace: "pre-wrap", fontSize: 12 }}>
-                {JSON.stringify(items.find(i => i.id === expandedId), null, 2)}
+                {JSON.stringify({
+                  ...items.find(i => i.id === expandedId),
+                  description: niceSubtitle(items.find(i => i.id === expandedId))
+                }, null, 2)}
               </pre>
             </div>
           </div>
