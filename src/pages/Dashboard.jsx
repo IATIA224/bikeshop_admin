@@ -158,25 +158,84 @@ export default function Dashboard() {
   // simple schema UIs for quick CRUD
   function CollectionForm({ onSubmit, initial = {}, onCancel }) {
     const [form, setForm] = useState(initial);
+
+    // Add stockStatus to form state if not present
+    useEffect(() => {
+      if (!form.stockStatus) {
+        setForm(f => ({ ...f, stockStatus: initial.stockStatus || "In-Stock" }));
+      }
+    }, [initial, form.stockStatus]);
+
     // Choose fields default to common keys depending on collection
     const defaults = collectionName === "prices"
-      ? ["productId", "productName", "price", "currency"]
-      : ["serviceId", "title", "description", "cost"];
+      ? ["productId", "productName", "price", "currency", "description", "stockStatus"]
+      : ["serviceId", "title", "description", "cost", "stockStatus"];
 
     // show inputs for each key (existing keys + defaults)
     const keys = Array.from(new Set([...Object.keys(initial), ...defaults]));
+
     return (
       <div style={{ marginTop: 10 }}>
-        {keys.map(k => (
-          <div key={k} style={{ display: "flex", gap: 8, marginTop: 8 }}>
-            <div style={{ width: 130, color: "var(--muted)" }}>{k}</div>
-            <input
-              style={{ width: "100%", padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", color: "#fff" }}
-              value={form[k] ?? ""}
-              onChange={(e) => setForm({ ...form, [k]: e.target.value })}
-            />
-          </div>
-        ))}
+        {keys.map(k => {
+          if (k === "stockStatus") return null; // handled below
+          if (k === "description") {
+            return (
+              <div key={k} style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <div style={{ width: 130, color: "var(--muted)" }}>{k}</div>
+                <textarea
+                  style={{ width: "100%", padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", color: "#fff", minHeight: 48 }}
+                  value={form[k] ?? ""}
+                  onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+                />
+              </div>
+            );
+          }
+          return (
+            <div key={k} style={{ display: "flex", gap: 8, marginTop: 8 }}>
+              <div style={{ width: 130, color: "var(--muted)" }}>{k}</div>
+              <input
+                style={{ width: "100%", padding: 8, borderRadius: 8, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", color: "#fff" }}
+                value={form[k] ?? ""}
+                onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+              />
+            </div>
+          );
+        })}
+
+        {/* Stock Status Buttons */}
+        <div style={{ display: "flex", gap: 8, marginTop: 12, alignItems: "center" }}>
+          <div style={{ width: 130, color: "var(--muted)" }}>Stock Status</div>
+          <button
+            type="button"
+            className={`btn small${form.stockStatus === "In-Stock" ? " primary" : ""}`}
+            style={{
+              background: form.stockStatus === "In-Stock"
+                ? "linear-gradient(90deg,#19c6e6,#1e90ff)"
+                : undefined,
+              color: form.stockStatus === "In-Stock" ? "#fff" : undefined,
+              fontWeight: form.stockStatus === "In-Stock" ? "bold" : undefined,
+              border: form.stockStatus === "In-Stock" ? "2px solid #19c6e6" : undefined
+            }}
+            onClick={() => setForm({ ...form, stockStatus: "In-Stock" })}
+          >
+            In-Stock
+          </button>
+          <button
+            type="button"
+            className={`btn small${form.stockStatus === "Out of Stock" ? " primary" : ""}`}
+            style={{
+              background: form.stockStatus === "Out of Stock"
+                ? "linear-gradient(90deg,#6a7cff,#19c6e6)"
+                : undefined,
+              color: form.stockStatus === "Out of Stock" ? "#fff" : undefined,
+              fontWeight: form.stockStatus === "Out of Stock" ? "bold" : undefined,
+              border: form.stockStatus === "Out of Stock" ? "2px solid #6a7cff" : undefined
+            }}
+            onClick={() => setForm({ ...form, stockStatus: "Out of Stock" })}
+          >
+            Out of Stock
+          </button>
+        </div>
 
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
           <button className="btn small" onClick={() => onSubmit(form)} type="button">Save</button>
@@ -196,7 +255,8 @@ export default function Dashboard() {
   }
 
   function niceTitle(item) {
-    const v = item?.title ?? item?.productName ?? item?.serviceId ?? item?.productId ?? item?.ID;
+    // Prefer "ITEM NAME" field if present, otherwise fallback
+    const v = item?.["ITEM NAME"] ?? item?.title ?? item?.productName ?? item?.serviceId ?? item?.productId ?? item?.ID;
     if (v == null) return "Untitled";
     if (typeof v === "string") return v;
     try { return JSON.stringify(v); } catch { return String(v); }
@@ -275,21 +335,18 @@ export default function Dashboard() {
             <thead>
               <tr>
                 <th style={{ width: 64 }}></th>
-                <th>Title / Name</th>
-                <th style={{ width: 260 }}>Description</th>
-                <th style={{ width: 120 }}>Price</th>
-                <th style={{ width: 160 }}>Uploaded / Updated</th>
-                <th style={{ width: 110 }}>ID</th>
+                <th style={{ textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>Name</th>
+                <th style={{ width: 120, textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>Price</th>
+                <th style={{ width: 160, textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>Uploaded/Updated</th>
+                <th style={{ width: 110, textAlign: "left", verticalAlign: "bottom", paddingBottom: 4 }}>ID</th>
                 <th style={{ width: 210 }}></th>
               </tr>
             </thead>
-
             <tbody>
               {items.length === 0 ? (
                 <tr className="empty-row"><td colSpan="7">No documents found in {collectionName}.</td></tr>
               ) : items.map(item => {
                 const price = primaryValue(item);
-                const subtitle = niceSubtitle(item);
                 const title = niceTitle(item);
                 const uploadedAt = formatDate(item._uploadedAt ?? item.createdAt ?? item.uploadedAt);
                 const updatedAt = formatDate(item.updatedAt);
@@ -306,11 +363,10 @@ export default function Dashboard() {
 
                     <td>
                       <div className="row-title">{title}</div>
-                      <div className="row-subtitle">{subtitle}</div>
                     </td>
 
                     <td>
-                      <div className="desc-snippet">{(subtitle || "").toString().slice(0,120)}{(subtitle?.toString().length ?? 0) > 120 ? '…' : ''}</div>
+                      {/* Description column intentionally left blank */}
                     </td>
 
                     <td>
